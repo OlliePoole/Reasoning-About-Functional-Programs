@@ -31,4 +31,42 @@
 >   | otherwise = ['0'] ++ ['.'] ++ show(x `mod` 100)
 > -- TODO: Find out how to do this recusrsively
 >
+>  -- |The 'lineLength' function returns the length of the line
+> lineLength :: Int
+> lineLength = 30
 >
+>  -- |The 'formatLine' function formats a line in the bill to the correct format
+>  -- It takes one argument, the BillItem to display, of type 'BillItem'.
+> formatLine :: BillItem -> String
+> formatLine (name, pence) = name ++ rep (lineLength - (length(name) + length(formatPence pence))) "." ++ formatPence pence ++ "\n"
+>
+>  -- |The 'rep' function repeats a character x times
+>  -- It takes two arguments, the number of repetitions, and the char to repeat.
+> rep :: Int -> String -> String
+> rep v c = concat [c | r <- [1..v]]
+>
+>  -- |The 'formatLines' function formats all lines in the bill
+>  -- It takes one argument, the BillType to display
+> formatLines :: BillType -> String
+> formatLines []      = ""
+> formatLines (x: xs) = formatLine x ++ formatLines xs
+>
+>  -- |The 'makeTotal' function calculates the total of a bill
+>  -- It takes one argument, the BillType to containing the bill items
+> makeTotal :: BillType -> Int
+> makeTotal []           = 0
+> makeTotal ((x, y): xs) = y + makeTotal xs
+>
+>  -- |The 'formatTotal' function formats the total of the bill
+>  -- It takes one argument, the total value of the bill
+> formatTotal :: Int -> String
+> formatTotal total = "\n" ++ formatLine ("Total", total)
+>
+>  -- |The 'formatBill' function formats the entire bill
+>  -- It takes one argument, the BillType to display
+> formatBill :: BillType -> String
+> formatBill [] = ""
+> formatBill bt = formatLines bt ++ formatTotal (makeTotal bt)
+>
+> testBill :: BillType
+> testBill = [ ("Dry Sherry, 1lt",540), ("Fish Fingers",121), ("Orange Jelly",56), ("Hula Hoops (Giant)",133), ("Unknown Item", 0), ("Dry Sherry, 1lt",540) ]
