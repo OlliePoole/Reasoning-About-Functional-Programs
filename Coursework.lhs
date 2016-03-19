@@ -70,3 +70,35 @@
 >
 > testBill :: BillType
 > testBill = [ ("Dry Sherry, 1lt",540), ("Fish Fingers",121), ("Orange Jelly",56), ("Hula Hoops (Giant)",133), ("Unknown Item", 0), ("Dry Sherry, 1lt",540) ]
+>
+> -- The Database
+>
+>  -- |The 'look' function finds an item in a user-defined database
+>  -- It takes two arguments, the database and the barcode to find.
+>  -- If the barcode cannot be found, ("Unknown Item", 0) will be returned
+> look :: Database -> BarCode -> BillItem
+> look db bc
+>   | length items > 0 = removeFirst(head items)
+>   | otherwise = ("Unknown Item", 0)
+>   where items = filter (\(code, _, _) -> code == bc) db
+>
+> removeFirst :: (BarCode, Name, Price) -> BillItem
+> removeFirst (_, name, price) = (name, price)
+>
+> -- Tests
+> -- `look codeIndex 1234` returns ("Dry Sherry, 1lt",909)
+> -- `look codeIndex 1` returns ("Unknown Item",0)
+>
+>
+>  -- |The 'lookUp' function finds an item in the set database
+>  -- It takes one arguments, the barcode to find.
+> lookUp :: BarCode -> BillItem
+> lookUp code = look codeIndex code
+>
+> makeBill :: TillType -> BillType
+> makeBill tt = map (\code -> (lookUp code)) tt
+>
+> printBill :: TillType -> String
+> printBill tt = formatBill (makeBill tt)
+>
+>
